@@ -1,7 +1,5 @@
 module MoneyMarket
 
-export tBillR, tBillD
-
 tBillR(t, P0, F) = (1.0 - P0/F) * 360.0/t
 tBillD(r, t, F) = r*t*F/360.0
 

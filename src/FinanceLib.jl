@@ -171,42 +171,159 @@ fmt(fv,r,n,m) = fv * (r/m) / ((1 + r/m)^(n*m) - 1)
 """
 fmt(fv,r,n) = fv * r / ((1 + r)^n - 1)
 
-fv(pv,r,n) = pv*(1+r)^n
-fv(pv,r,n,m) = pv*(1+r/m)^(n*m)
-fvc(fv,r,n) = fv*exp(r*n)
+"""
+`fv(pv,r,n,m) = FV of a Future cash flow with multiple compounding per period`
 
+* pv = Present cash flow
+* r  = rate of return
+* n  = number of periods
+* m  = number of compounding per period
+"""
+fv(pv,r,n,m) = pv*(1+r/m)^(n*m)
+
+"""
+`fv(pv,r,n) = FV of a Future cash flow with multiple compounding per period`
+
+* pv = Present cash flow
+* r  = rate of return
+* n  = number of periods
+"""
+fv(pv,r,n) = pv*(1+r)^n
+
+"""
+`fvc(pv,r,n) = FV of continuous expontial growth`
+
+* pv = PV
+* r = rate of return
+* n = number of periods
+"""
+fvc(pv,r,n) = pv*exp(r*n)
+
+"""
+`effRate(r,m) = real rate of return for multiple compounding per period`
+
+* m = number of compounding per period
+* r = rate of return in a period
+"""
 effRate(r,m) = (1.0 + r/m)^m - 1.0
+
+"""
+`effRateCont(r) = real rate of return for continuous exponential compounding`
+
+* r = rate of return in a period
+"""
 effRateCont(r) = exp(r) - 1.0
 
+"""
+`npv(r,tim,cf,t0) = NPV of cash flows against time given in periods`
+
+* r   = rate of return across the periods
+* tim = vector of time of cash flows given as double
+* cf  = vector of corresponding cash flows
+* t0  = time period at which the NPV is sought. Essentially, NPV(ti - t0)
+"""
 function npv(r,tim,cf,t0) r += 1.0; sum(cf ./ r .^ tim) * r^t0 end
+
+"""
+`npv(r,cf,t0) = NPV of cash flows against time given in periods`
+
+* r   = rate of return across the periods
+* cf  = vector of tuple of (time in double, cash flows)
+* t0  = time period at which the NPV is sought. Essentially, NPV(ti - t0)
+"""
 function npv(r,cf,t0) r += 1.0; sum( (((t,x),) -> x/r^t).(cf) ) * r^t0 end
 
 import Roots
 
+"""
+`irr(tim,cf) = IRR of cash flow against time given in periods`
+
+* tim = vector of time of cash flows given as double
+* cf  = vector of corresponding cash flows
+"""
 irr(tim,cf) = Roots.find_zero(r -> npv(r,tim,cf,0.0),(0.0,0.5))
+
+"""
+`irr(cf) = IRR of cash flow against time given in periods`
+
+* cf  = vector of tuple of (time in double, cash flows)
+"""
 irr(cf) = Roots.find_zero(r -> npv(r,cf,0.0),(0.0,0.5))
 
 import Dates
 
+"""
+`yearFrac(d0,d1) = Day difference (d1 - d0) in fraction of a year`
+
+* d0 = reference date
+* d1 = target date
+
+This function is similar to its counterpart in MS Excel except it divides the day 
+by 365.25 instead of more complicated rules followed in Excel.
+"""
 yearFrac(d0,d1) = Dates.value(d1 - d0)/365.25
 
+"""
+`xnpv(r,tim,cf,t0) = NPV of cash flows against time given in periods`
+
+* r   = rate of return across the periods
+* tim = vector of time of cash flows given as Date
+* cf  = vector of corresponding cash flows
+* t0  = time period at which the NPV is sought. Essentially, NPV(ti - t0)
+"""
 function xnpv(r,tim,cf,t0) r += 1.0; sum(cf./(t -> r^yearFrac(t0,t)).(tim)) end 
+
+"""
+`xnpv(r,cf,t0) = NPV of cash flows against time given in periods`
+
+* r   = rate of return across the periods
+* cf  = vector of tuple of (time in Date, cash flows)
+* t0  = time period at which the NPV is sought. Essentially, NPV(ti - t0)
+"""
 function xnpv(r,cf,t0) r += 1.0; sum((((t,x),) -> x/r^yearFrac(t0,t)).(cf)) end 
 
+"""
+`xirr(tim,cf) = IRR of cash flow against time given in Dates`
+
+* tim = vector of time of cash flows given as Dates
+* cf  = vector of corresponding cash flows
+"""
 xirr(tim,cf) = Roots.find_zero(r -> xnpv(r,tim,cf,Dates.Date(2020,1,1)),(0.0,0.5))
+
+"""
+`xirr(cf) = IRR of cash flow against time given in Dates`
+
+* cf  = vector of tuple of (time in Dates, cash flows)
+"""
 xirr(cf) = Roots.find_zero(r -> xnpv(r,cf,Dates.Date(2020,1,1)),(0.0,0.5))
 
+"""
+`sharpe(rf,ra,sa) = (ra - rf)/sa`
 
+Sharpe ratio where:
 
-
+* rf = risk free rate
+* ra = rate of return of portfolio 'a'
+* sa = std dev of portfolio 'a'
+"""
 sharpe(rf,ra,sa) = (ra - rf)/sa
+
+"""
+`rBeta(rf,rm,r) = (r - rf)/(rm - rf)`
+
+Map from rate to beta given a rf and rm
+"""
 rBeta(rf,rm,r) = (r - rf)/(rm - rf)
+
+"""
+`betaR(rf,rm,b) = rf + b*(rm - rf)`
+
+Map from beta to rate given a rf and rm
+"""
 betaR(rf,rm,b) = rf + b*(rm - rf)
 
 
 include("Bonds/mod.jl")
-
-
 
 
 
