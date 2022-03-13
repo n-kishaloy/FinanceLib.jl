@@ -2,7 +2,7 @@
 
 import FinanceLib.Bonds.MoneyMarket as MM
 
-@testset "FinanceLab.Bonds" begin
+@testset "FinanceLib.Bonds          " begin
   
   @testset "MoneyMarkets" begin 
     @test MM.tBillR(150,98_000,100_000) ≈ 0.048
@@ -22,3 +22,5 @@ import FinanceLib.Bonds.MoneyMarket as MM
 
 
 end
+
+include("Duration/runtests.jl")
