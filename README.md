@@ -1,4 +1,25 @@
-MIT License
+# FinanceLib
+
+## Motivation
+The library was created to be a reasonably complete package for all major financial formulas used in Finance. The codes are all in *pure* Julia. It encompasses most of the common area of *Finance* - *Accounts, Balance Sheets, Equity, Bonds, Derivatives, Free Cash Flows, Valuations etc*
+
+The project is currently in *work-in-progress (WIP) stage* and it is *strongly advised **not*** to use it.  
+
+## Features
+The library exports a base module **FinanceLib** and all domains in Finance are exported as submodule of the same. 
+
+## Code examples
+
+
+
+## Installation
+Add the library and import appropriate modules. 
+
+## Author(s)
+Kishaloy Neogi
+
+## License
+The library is distributed under the MIT License.
 
 Copyright (c) 2022 Kishaloy Neogi
 
@@ -19,3 +40,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
