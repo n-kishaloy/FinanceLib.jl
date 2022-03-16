@@ -2,7 +2,7 @@
 
 import FinanceLib.Bonds.MoneyMarket as MM
 
-@testset "FinanceLib.Bonds          " begin
+@testset "FinanceLib.Bonds                " begin
   
   @testset "MoneyMarkets" begin 
     @test MM.tBillR(150,98_000,100_000) ≈ 0.048
