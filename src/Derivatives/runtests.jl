@@ -42,6 +42,36 @@ import FinanceLib.Derivatives.Options as Op
 
 @testset "FinanceLib.Derivatives.Options  " begin
 
-  @test 1 == 1
+  ct = Op.Call(2_000, 81.75)
+
+  @test Op.valuation(ct, ST = 1_900) == 0.0
+  @test Op.profit(ct, ST = 1_900) == -81.75
+
+  @test Op.valuation(ct, ST = 2_100) == 100.0
+  @test Op.profit(ct, ST = 2_100) == 18.25
+
+  pt = Op.Put(2_000, 79.25)
+
+  @test Op.valuation(pt, ST = 1_900) == 100.0
+  @test Op.profit(pt, ST = 1_900) == 20.75
+
+  @test Op.valuation(pt, ST = 2_100) == 0.0
+  @test Op.profit(pt, ST = 2_100) == -79.25
+
+  cv = Op.CoveredCall(98, Op.Call(105, 8))
+
+  @test Op.valuation(cv, ST = 110) == 105
+  @test Op.profit(cv, ST = 110) == 15
+
+  @test Op.valuation(cv, ST = 88) == 88
+  @test Op.profit(cv, ST = 88) == -2
+
+  pt = Op.ProtectivePut(0.875, Op.Put(0.90, 0.075))
+
+  @test Op.valuation(pt, ST = 0.96) == 0.96
+  @test Op.profit(pt, ST = 0.96) ≈ 0.01
+
+  @test Op.valuation(pt, ST = 0.75) == 0.90
+  @test Op.profit(pt, ST = 0.75) ≈ -0.05
 
 end

@@ -42,5 +42,39 @@ println("\n\n\nPerformance of FinanceLib.Derivatives.Options functions")
 
 import FinanceLib.Derivatives.Options as Op
 
+ct = Op.Call(2_000, 81.75)
+
+@code_warntype Op.valuation(ct, ST = 1_900) 
+@code_warntype Op.profitT(ct, ST = 1_900) 
+
+@code_warntype Op.valuation(ct, ST = 2_100) 
+@code_warntype Op.profitT(ct, ST = 2_100) 
+
+pt = Op.Put(2_000, 79.25)
+
+@code_warntype Op.valuation(pt, ST = 1_900) 
+@code_warntype Op.profitT(pt, ST = 1_900) 
+
+@code_warntype Op.valuation(pt, ST = 2_100) 
+@code_warntype Op.profitT(pt, ST = 2_100) 
+
+cv = Op.CoveredCall(98, Op.Call(105, 8))
+
+@code_warntype Op.valuation(cv, ST = 110) 
+@code_warntype Op.profit(cv, ST = 110) 
+
+@code_warntype Op.valuation(cv, ST = 88) 
+@code_warntype Op.profit(cv, ST = 88) 
+
+pt = Op.ProtectivePut(0.875, Op.Put(0.90, 0.075))
+
+@code_warntype Op.valuation(pt, ST = 0.96) 
+@code_warntype Op.profit(pt, ST = 0.96) 
+
+@code_warntype Op.valuation(pt, ST = 0.75) 
+@code_warntype Op.profit(pt, ST = 0.75) 
+
+
+
 
 println("Benchmarks\n")

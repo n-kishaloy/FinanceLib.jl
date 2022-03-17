@@ -49,8 +49,8 @@ end
 """
 struct XForward
   r     ::  Float64     # risk-free rate of return per year
-  T0    ::  Date  # Contract start date as Date
-  T     ::  Date  # Forward expiry date as Date
+  T0    ::  Date        # Contract start date as Date
+  T     ::  Date        # Forward expiry date as Date
   FT    ::  Float64     # Forward rate @ T = S0*(1+r)^T
   benf  ::  Float64     # Dividends and other benefits - Cost of holding the asset
 end
