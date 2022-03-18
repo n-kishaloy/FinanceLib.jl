@@ -323,7 +323,7 @@ Map from beta to rate given a rf and rm
 betaR(rf,rm,b) = rf + b*(rm - rf)
 
 
-include("Bonds/mod.jl")
+include("FixedIncomes/mod.jl")
 include("Derivatives/mod.jl")
 
 end # module

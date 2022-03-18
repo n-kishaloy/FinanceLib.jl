@@ -86,5 +86,5 @@ import Dates
 
 end
 
-include("Bonds/runtests.jl")
+include("FixedIncomes/runtests.jl")
 include("Derivatives/runtests.jl")

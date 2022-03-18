@@ -1,6 +1,6 @@
-println("\n\n\nPerformance of FinanceLib.Bonds functions")
+println("\n\n\nPerformance of FinanceLib.FixedIncomes.Bonds functions")
 
-import FinanceLib.Bonds.MoneyMarket as MM
+import FinanceLib.FixedIncomes.Bonds.MoneyMarket as MM
 
 @code_warntype MM.tBillR(150,98000,100000)
 @code_warntype MM.tBillD(0.048, 150, 100_000) 

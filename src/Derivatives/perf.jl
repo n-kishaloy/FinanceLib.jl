@@ -45,18 +45,18 @@ import FinanceLib.Derivatives.Options as Op
 ct = Op.Call(2_000, 81.75)
 
 @code_warntype Op.valuation(ct, ST = 1_900) 
-@code_warntype Op.profitT(ct, ST = 1_900) 
+@code_warntype Op.profit(ct, ST = 1_900) 
 
 @code_warntype Op.valuation(ct, ST = 2_100) 
-@code_warntype Op.profitT(ct, ST = 2_100) 
+@code_warntype Op.profit(ct, ST = 2_100) 
 
 pt = Op.Put(2_000, 79.25)
 
 @code_warntype Op.valuation(pt, ST = 1_900) 
-@code_warntype Op.profitT(pt, ST = 1_900) 
+@code_warntype Op.profit(pt, ST = 1_900) 
 
 @code_warntype Op.valuation(pt, ST = 2_100) 
-@code_warntype Op.profitT(pt, ST = 2_100) 
+@code_warntype Op.profit(pt, ST = 2_100) 
 
 cv = Op.CoveredCall(98, Op.Call(105, 8))
 
