@@ -1,7 +1,7 @@
 import FinanceLib
 import Dates
 
-@testset "FinanceLib                      " begin
+@testset "FinanceLib                                                  " begin
 
   @testset "tv" begin
     @test FinanceLib.tMul(0.06/12, -120.0) == 0.5496327333641637

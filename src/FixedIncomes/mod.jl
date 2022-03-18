@@ -16,6 +16,8 @@ module FixedIncomes
 
 
 
+include("Rates.jl")
 include("Bonds/mod.jl")
+
 
 end

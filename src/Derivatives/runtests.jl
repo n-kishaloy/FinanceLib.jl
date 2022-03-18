@@ -4,7 +4,7 @@ import FinanceLib.Derivatives.Forwards as Fd
 using Dates: Date
 using FinanceLib: yearFrac
 
-@testset "FinanceLib.Derivatives.Forwards " begin
+@testset "FinanceLib.Derivatives.Forwards                             " begin
   
   fw = Fd.Forward_S0(r = 0.03, T = 0.25, S0 = 50, benf = -1)
   @test fw.FT == 51.37827066066438
@@ -40,7 +40,7 @@ end
 
 import FinanceLib.Derivatives.Options as Op
 
-@testset "FinanceLib.Derivatives.Options  " begin
+@testset "FinanceLib.Derivatives.Options                              " begin
 
   ct = Op.Call(2_000, 81.75)
 

@@ -1,4 +1,4 @@
-module Duration 
+module Durations
 
 mcDuration() = 0.0
   

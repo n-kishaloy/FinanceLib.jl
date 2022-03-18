@@ -5,6 +5,6 @@ module Bonds
 
 
 include("MoneyMarket.jl")
-include("Duration/mod.jl")
+include("Durations/mod.jl")
 
 end
