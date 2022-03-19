@@ -15,6 +15,66 @@ You may see the github repository at <https://github.com/n-kishaloy/FinanceLib.j
 """
 module FinanceLib
 
+import Dates
+
+"""
+`yearFrac(d0,d1) = Day difference (d1 - d0) in fraction of a year`
+
+* d0 = reference date
+* d1 = target date
+
+This function is similar to its counterpart in MS Excel except it divides the day 
+by 365.25 instead of more complicated rules followed in Excel.
+"""
+yearFrac(d0,d1) = Dates.value(d1 - d0)/365.25
+
+"""
+PeriodSeries = Series of Tuples with 1st value gives period value in Double
+"""
+const PeriodSeries   = Vector{Tuple{Float64, Float64}}
+
+"""
+DateSeries = Series of Tuples with 1st value gives period value in Date
+"""
+const DateSeries  = Vector{Tuple{Dates.Date, Float64}}
+
+dateToPeriodSeries(t0, pd) = (((x,y),) -> (yearFrac(t0, x), y)).(pd)
+
+"""
+`disFactAnnual(r) = Discount factor for 1 period = 1/(1+r)`
+
+* r = rate for 1 period
+"""
+disFactAnnual(r) = 1/(1+r)
+
+"""
+`disFact(r, n) = Discount factor = 1/(1+r)^n`
+
+* r = rate for 1 period
+* n = period given as Double
+"""
+disFact(r, n) = 1/(1+r)^n
+
+"""
+`xdisFact(r, d0, d1) = Discount Factor between period = 1/(1+r)^yearFrac(d0, d1)`
+
+* r  = rate for 1 year during period (d0,d1)
+* d0 = begin date 
+* d1 = end date 
+"""
+xdisFact(r, d0, d1) = 1/(1+r)^yearFrac(d0, d1)
+
+"""
+`fwdDisFact((r0,t0), (r1,t1)) 
+    = Forward rate between t0 and t1 given as Double
+    = disFact(r1,t1) / disFact(r0,t0)`
+
+* (r0, t0) = Tuple of Rate and Time in (0,t0)
+* (r1, t1) = Tuple of Rate and Time in (0,t1)
+"""
+fwdDisFact((r0,t0), (r1,t1)) = disFact(r1,t1) / disFact(r0,t0)
+
+
 """
 `tMul(r,n) = Time Multiplier`
 
@@ -249,19 +309,6 @@ irr(tim,cf) = Roots.find_zero(r -> npv(r,tim,cf,0.0),(0.0,0.5))
 * cf  = vector of tuple of (time in double, cash flows)
 """
 irr(cf) = Roots.find_zero(r -> npv(r,cf,0.0),(0.0,0.5))
-
-import Dates
-
-"""
-`yearFrac(d0,d1) = Day difference (d1 - d0) in fraction of a year`
-
-* d0 = reference date
-* d1 = target date
-
-This function is similar to its counterpart in MS Excel except it divides the day 
-by 365.25 instead of more complicated rules followed in Excel.
-"""
-yearFrac(d0,d1) = Dates.value(d1 - d0)/365.25
 
 """
 `xnpv(r,tim,cf,t0) = NPV of cash flows against time given in periods`

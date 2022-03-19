@@ -11,7 +11,7 @@ end
 
 @testset "FinanceLib.FixedIncomes.Rates                               " begin
   
-  @test 1 == 1
+  @test Rt.parToSpotRates([(1,0.05), (2,0.0597), (3, 0.0691), (4, 0.0781)])[4][2] ≈ 0.08002666689660898
 
 
 end

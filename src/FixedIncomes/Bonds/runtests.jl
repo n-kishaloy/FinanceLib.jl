@@ -23,4 +23,3 @@ import FinanceLib.FixedIncomes.Bonds.MoneyMarket as MM
 
 end
 
-include("Durations/runtests.jl")

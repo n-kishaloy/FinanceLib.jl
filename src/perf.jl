@@ -63,6 +63,22 @@ import Dates
 #   Dates.Date(2013,2,15), Dates.Date(2014,9,18), Dates.Date(2015,2,20)],
 #   [-115, 5, 25, -10, 200]) ) 
 
+# td = collect(zip([Dates.Date(2012,2,25), Dates.Date(2012,6,28), 
+#   Dates.Date(2013,2,15), Dates.Date(2014,9,18), Dates.Date(2015,2,20)],
+#   [-115, 5, 25, -10, 200]))
+
+# @code_warntype FinanceLib.dateToPeriodSeries(Dates.Date(2010,05,12), td)
+
+# td1 = FinanceLib.dateToPeriodSeries(Dates.Date(2010,05,12), td)
+
+# @code_warntype FinanceLib.irr(td1) 
+# @code_warntype FinanceLib.xirr(td) 
+
+# @code_warntype FinanceLib.xirr(zip([Dates.Date(2012,2,25), Dates.Date(2012,6,28), 
+#   Dates.Date(2013,2,15), Dates.Date(2014,9,18), Dates.Date(2015,2,20)],
+#   [-115, 5, 25, -10, 200]) ) 
+
+
 # println("Benchmarks")
 
 # println("\nNPV")

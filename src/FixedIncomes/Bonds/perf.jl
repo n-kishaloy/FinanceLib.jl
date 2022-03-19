@@ -15,5 +15,3 @@ import FinanceLib.FixedIncomes.Bonds.MoneyMarket as MM
 println("Benchmanrks\n")
 
 # print("tBillR:"); @btime MM.tBillR(150,98000,100000)
-
-include("Durations/perf.jl")
