@@ -97,6 +97,10 @@ import Dates
       Dates.Date(2013,2,15), Dates.Date(2014,9,18), Dates.Date(2015,2,20)],
       [-115, 5, 25, -10, 200]) ) ==  0.2783166029306355
 
+    @test FinanceLib.npv(FinanceLib.PeriodSeries([(0.5,0.05), (1.25, 0.0575), (2, 0.0485), (3.5, 0.0625), (4.25, 0.055)]), [-150, 20, 15, 80, 100], 0.3) == 31.530253870718543
+
+    @test FinanceLib.xnpv(FinanceLib.DateSeries([(Dates.Date(2014,9,20),0.05), (Dates.Date(2015,2,1), 0.0575), (Dates.Date(2016,10,5), 0.0485), (Dates.Date(2017,12,5), 0.0625), (Dates.Date(2019,1,5), 0.055)]), [-150, 20, 15, 80, 100], Dates.Date(2014,2,15)) ==  29.323165765999597 
+
 
   end
 

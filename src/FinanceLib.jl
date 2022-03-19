@@ -293,6 +293,19 @@ function npv(r,tim,cf,t0) r += 1.0; sum(cf ./ r .^ tim) * r^t0 end
 """
 function npv(r,cf,t0) r += 1.0; sum( (((t,x),) -> x/r^t).(cf) ) * r^t0 end
 
+"""
+`npv(tr::PeriodSeries,cf,t0) = NPV of cash flows with rate given by period`
+
+* tr  = vector of Tuple (time in Float64, rate between periods @ rate / period)
+* cf  = vector of corresponding cash flows
+* t0  = time period at which the NPV is sought
+
+Note: this function assumes that the time is given in ascending order, thus between 2 consecutive period given in the vector tr, tr[i-1] and tr[i], the rate / period is assumed to be r[i] between period t[i-1] to t[i], essentially f(i-1,i) = tr[i][2] ==> Forward rate per period. 
+
+Also the time t0 is assumed to be **less than** 1st time period => t0 < tr[1][1]
+"""
+npv(tr::PeriodSeries,cf,t0) = (foldl(((y, i)-> (y+cf[i])/(1 + tr[i][2])^(tr[i][1] - tr[i-1][1])), length(tr):-1:2; init=0.0) + cf[1])/(1 + tr[1][2])^(tr[1][1] - t0)
+
 import Roots
 
 """
@@ -311,23 +324,37 @@ irr(tim,cf) = Roots.find_zero(r -> npv(r,tim,cf,0.0),(0.0,0.5))
 irr(cf) = Roots.find_zero(r -> npv(r,cf,0.0),(0.0,0.5))
 
 """
-`xnpv(r,tim,cf,t0) = NPV of cash flows against time given in periods`
+`xnpv(r,tim,cf,t0) = NPV of cash flows against time given by Date`
 
-* r   = rate of return across the periods
+* r   = rate of return across the years
 * tim = vector of time of cash flows given as Date
 * cf  = vector of corresponding cash flows
-* t0  = time period at which the NPV is sought. Essentially, NPV(ti - t0)
+* t0  = Date at which the NPV is sought. 
 """
 function xnpv(r,tim,cf,t0) r += 1.0; sum(cf./(t -> r^yearFrac(t0,t)).(tim)) end 
 
 """
-`xnpv(r,cf,t0) = NPV of cash flows against time given in periods`
+`xnpv(r,cf,t0) = NPV of cash flows against time given by Date`
 
-* r   = rate of return across the periods
+* r   = rate of return across the years
 * cf  = vector of tuple of (time in Date, cash flows)
-* t0  = time period at which the NPV is sought. Essentially, NPV(ti - t0)
+* t0  = Date at which the NPV is sought. 
 """
 function xnpv(r,cf,t0) r += 1.0; sum((((t,x),) -> x/r^yearFrac(t0,t)).(cf)) end 
+
+"""
+`xnpv(tr::DateSeries,cf,t0) = NPV of cash flows with rate given by Date`
+
+* tr  = vector of Tuple (time in Date, rate between Datess @ rate / year)
+* cf  = vector of corresponding cash flows
+* t0  = Date at which the NPV is sought
+
+Note: this function assumes that the time is given in ascending order, thus between 2 consecutive period given in the vector tr, tr[i-1] and tr[i], the rate / period is assumed to be r[i] between period t[i-1] to t[i], essentially f(i-1,i) = tr[i][2] ==> Forward rate per period. 
+
+Also the time t0 is assumed to be **less than** 1st time period => t0 < tr[1][1]
+"""
+xnpv(tr::DateSeries,cf,t0) = (foldl(((y, i)-> (y+cf[i])/(1 + tr[i][2])^yearFrac(tr[i-1][1], tr[i][1])), length(tr):-1:2; init=0.0) + cf[1])/(1 + tr[1][2])^yearFrac(t0, tr[1][1])
+
 
 """
 `xirr(tim,cf) = IRR of cash flow against time given in Dates`
