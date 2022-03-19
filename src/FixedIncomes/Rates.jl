@@ -14,8 +14,12 @@ You may see the github repository at <https://github.com/n-kishaloy/FinanceLib.j
 """
 module Rates
 
+import FinanceLib as Fl
+
 """
 `parToSpotRates(x) = Convert Spot rates to Par rates`
+
+* x = Vector of Tuples (period as Float64, rate as Float64)
 """
 function parToSpotRates(x)
   n = length(x); y = Vector{Tuple{Float64,Float64}}(undef, n); y[1] = x[1]
@@ -29,8 +33,6 @@ function parToSpotRates(x)
   end
   y
 end 
-
-
 
 
 end

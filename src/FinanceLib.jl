@@ -29,7 +29,7 @@ by 365.25 instead of more complicated rules followed in Excel.
 yearFrac(d0,d1) = Dates.value(d1 - d0)/365.25
 
 """
-PeriodSeries = Series of Tuples with 1st value gives period value in Double
+PeriodSeries = Series of Tuples with 1st value gives period value in Float64
 """
 const PeriodSeries   = Vector{Tuple{Float64, Float64}}
 
@@ -51,7 +51,7 @@ disFactAnnual(r) = 1/(1+r)
 `disFact(r, n) = Discount factor = 1/(1+r)^n`
 
 * r = rate for 1 period
-* n = period given as Double
+* n = period given as Float64
 """
 disFact(r, n) = 1/(1+r)^n
 
@@ -66,7 +66,7 @@ xdisFact(r, d0, d1) = 1/(1+r)^yearFrac(d0, d1)
 
 """
 `fwdDisFact((r0,t0), (r1,t1)) 
-    = Forward rate between t0 and t1 given as Double
+    = Forward rate between t0 and t1 given as Float64
     = disFact(r1,t1) / disFact(r0,t0)`
 
 * (r0, t0) = Tuple of Rate and Time in (0,t0)
@@ -278,7 +278,7 @@ effRateCont(r) = exp(r) - 1.0
 `npv(r,tim,cf,t0) = NPV of cash flows against time given in periods`
 
 * r   = rate of return across the periods
-* tim = vector of time of cash flows given as double
+* tim = vector of time of cash flows given as Float64
 * cf  = vector of corresponding cash flows
 * t0  = time period at which the NPV is sought. Essentially, NPV(ti - t0)
 """
@@ -288,7 +288,7 @@ function npv(r,tim,cf,t0) r += 1.0; sum(cf ./ r .^ tim) * r^t0 end
 `npv(r,cf,t0) = NPV of cash flows against time given in periods`
 
 * r   = rate of return across the periods
-* cf  = vector of tuple of (time in double, cash flows)
+* cf  = vector of tuple of (time in Float64, cash flows)
 * t0  = time period at which the NPV is sought. Essentially, NPV(ti - t0)
 """
 function npv(r,cf,t0) r += 1.0; sum( (((t,x),) -> x/r^t).(cf) ) * r^t0 end
@@ -298,7 +298,7 @@ import Roots
 """
 `irr(tim,cf) = IRR of cash flow against time given in periods`
 
-* tim = vector of time of cash flows given as double
+* tim = vector of time of cash flows given as Float64
 * cf  = vector of corresponding cash flows
 """
 irr(tim,cf) = Roots.find_zero(r -> npv(r,tim,cf,0.0),(0.0,0.5))
@@ -306,7 +306,7 @@ irr(tim,cf) = Roots.find_zero(r -> npv(r,tim,cf,0.0),(0.0,0.5))
 """
 `irr(cf) = IRR of cash flow against time given in periods`
 
-* cf  = vector of tuple of (time in double, cash flows)
+* cf  = vector of tuple of (time in Float64, cash flows)
 """
 irr(cf) = Roots.find_zero(r -> npv(r,cf,0.0),(0.0,0.5))
 
