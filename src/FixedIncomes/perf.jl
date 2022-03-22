@@ -6,7 +6,6 @@ using FinanceLib: yearFrac
 import FinanceLib as Fl
 
 import FinanceLib.FixedIncomes as FI
-import FinanceLib.FixedIncomes.Rates as Rt
 import FinanceLib.FixedIncomes.MoneyMarkets as MM
 
 
@@ -25,9 +24,6 @@ println("\n\n\nPerformance of FinanceLib.FixedIncomes functions")
 @code_warntype MM.twrr([4,6,5.775,6.72,5.508],[1,-0.5,0.225,-0.6]) 
 @code_warntype MM.twrr(1.0, [100, 112, 142.64], [0, 20.])
 
-
-
-@code_warntype Rt.parToSpotRates([(1,0.05), (2,0.0597), (3, 0.0691), (4, 0.0781)])
 
 
 println("Benchmarks\n")

@@ -39,4 +39,6 @@ function ytmCoupleBonds(x :: Fl.PeriodSeries, c)
 end
 
 
+include("Rates.jl")
+
 end
