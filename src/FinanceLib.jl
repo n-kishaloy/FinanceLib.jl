@@ -355,7 +355,6 @@ Also the time t0 is assumed to be **less than** 1st time period => t0 < tr[1][1]
 """
 xnpv(tr::DateSeries,cf,t0) = (foldl(((y, i)-> (y+cf[i])/(1 + tr[i][2])^yearFrac(tr[i-1][1], tr[i][1])), length(tr):-1:2; init=0.0) + cf[1])/(1 + tr[1][2])^yearFrac(t0, tr[1][1])
 
-
 """
 `xirr(tim,cf) = IRR of cash flow against time given in Dates`
 

@@ -22,13 +22,10 @@ import FinanceLib as Fl
 * x = Vector of Tuples (period as Float64, rate as Float64)
 """
 function parToSpotRates(x)
-  n = length(x); y = Vector{Tuple{Float64,Float64}}(undef, n); y[1] = x[1]
-  d = x[2][1] - x[1][1]
+  n = length(x); y = Vector{Tuple{Float64,Float64}}(undef, n); 
+  y[1] = x[1]; d = x[2][1] - x[1][1]
   for i ∈ 2:n
-    s = 1.0
-    for k ∈ 1:(i-1)
-      s = s - x[i][2]*d/(1+y[k][2])^x[k][1]
-    end
+    s = 1.0; for k ∈ 1:(i-1) s = s - x[i][2]*d/(1+y[k][2])^x[k][1] end
     y[i] = (x[i][1], ((1 + d*x[i][2])/s)^(1/x[i][1]) - 1.0 )
   end
   y

@@ -27,7 +27,7 @@ import FinanceLib.FixedIncomes.Bonds.MoneyMarket as MM
     bd = Bd.priceCouponBond(rS, 0.1)*100
     @test bd == 105.42950371364294
 
-    # println(Bd.ytmCoupleBonds(rS, 0.1, bd))
+    @test Bd.ytmCoupleBonds(rS, 0.1) == 0.0861792633877846
 
 end
 
