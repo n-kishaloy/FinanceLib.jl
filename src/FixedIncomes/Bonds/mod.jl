@@ -25,6 +25,12 @@ import Roots
 """
 priceCouponBond(x :: Fl.PeriodSeries, c) = sum( (((p,r),) -> c*(x[2][1] - x[1][1])/(1+r)^p).(x) ) + 1/(1+x[end][2])^x[end][1]
 
+"""
+`ytmCoupleBonds(x :: Fl.PeriodSeries, c) = YTM of Coupon Bonds`
+
+* x = Vector of Tuples (period as Float64, spot rate as Float64)
+* c = coupon rate as Float64 (c = 0.05 for coupon of 5 on 100 face value)
+"""
 function ytmCoupleBonds(x :: Fl.PeriodSeries, c) 
   cf =  (((t,_),) -> (t, c*(x[2][1] - x[1][1]))).(x)
   cf[end] = (cf[end][1], cf[end][2] + 1.0)
@@ -32,6 +38,5 @@ function ytmCoupleBonds(x :: Fl.PeriodSeries, c)
   Fl.irr(cf)
 end
 
-include("MoneyMarket.jl")
 
 end
