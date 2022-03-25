@@ -47,6 +47,7 @@ import Dates
 # @code_warntype FinanceLib.irr(zip([0.125,0.29760274,0.49760274,0.55239726,0.812671233], [-10.25,-2.5,3.5,9.5,1.25])) 
 
 # @code_warntype FinanceLib.yearFrac(Dates.Date(2027,2,12), Dates.Date(2018,2,12)) 
+# @code_warntype FinanceLib.invYearFrac(Dates.Date(2027,2,12), -8.999315537303216)
 
 # @code_warntype FinanceLib.xnpv(0.08, [Dates.Date(2012,2,25), Dates.Date(2012,6,28), 
 #   Dates.Date(2013,2,15), Dates.Date(2014,9,18), Dates.Date(2015,2,20)],

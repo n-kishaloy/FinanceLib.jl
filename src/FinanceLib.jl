@@ -29,6 +29,14 @@ by 365.25 instead of more complicated rules followed in Excel.
 yearFrac(d0,d1) = Dates.value(d1 - d0)/365.25
 
 """
+`invYearFrac(t0, yF) = Reverse of yearFrac with anchor Date and YearFrac to calculate final Date.`
+
+* t0 = Date from which to calculate. 
+* yF = Year Fraction as Float64. 
+"""
+invYearFrac(t0, yF) = t0 + Dates.Day(round(yF * 365.25))
+
+"""
 PeriodSeries = Series of Tuples with 1st value gives period value in Float64
 """
 const PeriodSeries   = Vector{Tuple{Float64, Float64}}

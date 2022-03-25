@@ -5,11 +5,11 @@ import Dates
 
   @testset "tv" begin
     @test FinanceLib.yearFrac(Dates.Date(2027,2,12), Dates.Date(2018,2,12)) ≈ -8.999315537303216
+    @test FinanceLib.invYearFrac(Dates.Date(2027,2,12), -8.999315537303216) == Dates.Date(2018,2,12)
 
     @test FinanceLib.disFactAnnual(0.07) == 0.9345794392523364
     @test FinanceLib.disFact(0.09, 3) == 0.7721834800610642 
     @test FinanceLib.fwdDisFact((0.07, 1), (0.09, 3)) == 0.8262363236653387
-
 
     @test FinanceLib.xdisFact(0.09, Dates.Date(2015,3,15), Dates.Date(2018,10,8)) == 0.7353328680759499
 
