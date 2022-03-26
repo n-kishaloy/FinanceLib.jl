@@ -46,7 +46,7 @@ DateSeries = Series of Tuples with 1st value gives period value in Date
 """
 const DateSeries  = Vector{Tuple{Dates.Date, Float64}}
 
-dateToPeriodSeries(t0, pd) = (((x,y),) -> (yearFrac(t0, x), y)).(pd)
+dateToPeriodSeries(d0, pd) = (((x,y),) -> (yearFrac(d0, x), y)).(pd)
 
 """
 `disFactAnnual(r) = Discount factor for 1 period = 1/(1+r)`
