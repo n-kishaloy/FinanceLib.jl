@@ -32,7 +32,7 @@ end
 """
 ```
 Put
-  X     # Execise price
+  X     # Exercise price
   price # Price of option
 ```
 """

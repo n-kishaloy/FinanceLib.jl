@@ -39,7 +39,7 @@ end
 * r   = rate as Float64, where rate is constant
 * bd  = CouponBond
 """
-priceCouponBond(r::Float64, bd) = (bd.c/bd.freq) * sum(1.0 ./ (1+r).^((1:(bd.freq*bd.T)) ./ bd.freq )) + 1/(1+r)^bd.T
+priceCouponBond(r::Float64, bd) = (bd.c/bd.freq) * sum( 1.0 ./ (1+r/bd.freq).^(1:(bd.freq*bd.T)) ) + 1/(1+r/bd.freq)^(bd.T * bd.freq)
 
 """
 `priceCouponBond(r, bd) = Price of coupon bonds`
@@ -47,7 +47,7 @@ priceCouponBond(r::Float64, bd) = (bd.c/bd.freq) * sum(1.0 ./ (1+r).^((1:(bd.fre
 * r   = RateCurve of spot rates
 * bd  = CouponBond
 """
-priceCouponBond(r::Rt.RateCurve, bd) = (bd.c/bd.freq) * sum( (i -> 1/(1+ Rt.rate(r,i/bd.freq))^(i/bd.freq) ).(1:(bd.freq*bd.T)) ) + 1/(1 + Rt.rate(r, bd.T))^bd.T
+priceCouponBond(r::Rt.RateCurve, bd) = (bd.c/bd.freq) * sum( (i -> 1/(1+ Rt.rate(r,i/bd.freq)/bd.freq)^i ).(1:(bd.freq*bd.T)) ) + 1/(1 + Rt.rate(r, bd.T)/bd.freq)^(bd.T * bd.freq)
 
 """
 `ytmCoupleBonds(bd :: CouponBond, P) = YTM of Coupon Bonds`
@@ -56,33 +56,33 @@ priceCouponBond(r::Rt.RateCurve, bd) = (bd.c/bd.freq) * sum( (i -> 1/(1+ Rt.rate
 * P = Price of CouponBond
 """
 function ytmCouponBond(bd::CouponBond, P)
-  cf = (i -> (i/bd.freq, bd.c/bd.freq)).(1:(bd.freq*bd.T))
+  cf = (i -> (i, bd.c/bd.freq)).(1:(bd.freq*bd.T))
   cf[end] = (cf[end][1], cf[end][2] + 1.0); push!(cf, (0.0, -P))
-  Fl.irr(cf)
+  Fl.irr(cf)*bd.freq
 end
 
-"""
-`priceCouponBond(x, c) = Price of coupon bonds`
+# """
+# `priceCouponBond(x, c) = Price of coupon bonds`
 
-* x = Vector of Tuples (period as Float64, spot rate as Float64)
-* c = coupon rate as Float64 (c = 0.05 for coupon of 5 on 100 face value)
-"""
-function priceCouponBond(x :: Fl.PeriodSeries, c) 
-  dc = c * (x[2][1] - x[1][1])
-  sum( (((p,r),) -> dc/(1+r)^p).(x) ) + 1/(1+x[end][2])^x[end][1]
-end
+# * x = Vector of Tuples (period as Float64, spot rate as Float64)
+# * c = coupon rate as Float64 (c = 0.05 for coupon of 5 on 100 face value)
+# """
+# function priceCouponBond(x :: Fl.PeriodSeries, c) 
+#   dc = c * (x[2][1] - x[1][1])
+#   sum( (((p,r),) -> dc/(1+r)^p).(x) ) + 1/(1+x[end][2])^x[end][1]
+# end
 
-"""
-`ytmCoupleBonds(x :: Fl.PeriodSeries, c) = YTM of Coupon Bonds`
+# """
+# `ytmCoupleBonds(x :: Fl.PeriodSeries, c) = YTM of Coupon Bonds`
 
-* x = Vector of Tuples (period as Float64, spot rate as Float64)
-* c = coupon rate as Float64 (c = 0.05 for coupon of 5 on 100 face value)
-"""
-function ytmCouponBond(x :: Fl.PeriodSeries, c) 
-  dc = c * (x[2][1] - x[1][1]); cf = (((t,_),) -> (t, dc)).(x)
-  cf[end] = (cf[end][1], dc + 1.0); 
-  push!(cf, (0.0, -priceCouponBond(x, c)))
-  Fl.irr(cf)
-end
+# * x = Vector of Tuples (period as Float64, spot rate as Float64)
+# * c = coupon rate as Float64 (c = 0.05 for coupon of 5 on 100 face value)
+# """
+# function ytmCouponBond(x :: Fl.PeriodSeries, c) 
+#   dc = c * (x[2][1] - x[1][1]); cf = (((t,_),) -> (t, dc)).(x)
+#   cf[end] = (cf[end][1], dc + 1.0); 
+#   push!(cf, (0.0, -priceCouponBond(x, c)))
+#   Fl.irr(cf)
+# end
 
 end

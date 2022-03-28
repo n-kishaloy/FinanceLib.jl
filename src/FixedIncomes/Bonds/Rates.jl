@@ -38,9 +38,6 @@ struct DiscountFactor
   freq    :: Int64
 end
 
-
-rateVector(x::RateCurve)= Fl.PeriodSeries((i-> (i/x.freq,x.rate[i])).(axes(x.r,1)))  
-
 rate(rt::RateCurve, y::Float64) = rt.rate[Int64(y*rt.freq)]
 
 function rateEst(rt::RateCurve, y::Float64)
@@ -60,10 +57,11 @@ end
 """
 function parToSpotRates(x :: RateCurve)
   n = length(x.rate); y = RateCurve(Vector{Float64}(undef, n), x.freq)
-  for i ∈ 1:n
+  y.rate[1] = x.rate[1]
+  for i ∈ 2:n
     xm = x.rate[i]/x.freq
-    s = 1.0 - sum( (k -> xm/(1 + y.rate[k])^(k/x.freq)).(1:(i-1)) )
-    y.rate[i] = ((1.0 + xm) / s)^(x.freq/i) - 1.0
+    s = 1.0 - sum( (k -> xm/(1 + y.rate[k]/x.freq)^k).(1:(i-1)) )
+    y.rate[i] = (((1.0 + xm) / s)^(1/i) - 1.0)*x.freq
   end
   y
 end
@@ -73,12 +71,12 @@ end
 
 * x = RateCurve of spot rates
 """
-spotToParRates(x::RateCurve) = RateCurve(1:length(x.rate) .|> i -> x.freq*(1-1/(1+x.rate[i])^(i/x.freq))/sum((k -> 1/(1 + x.rate[k])^(k/x.freq)).(1:i)), x.freq)
+spotToParRates(x::RateCurve) = RateCurve(1:length(x.rate) .|> i -> x.freq*(1-1/(1+x.rate[i]/x.freq)^i)/sum((k -> 1/(1 + x.rate[k]/x.freq)^k).(1:i)), x.freq)
 
 """
 `discFactorToSpotRate(dF) = Convert Discount rate dF to Spot rate`
 """
-discFactorToSpotRate(dF) = RateCurve( (i -> (1/dF.factor[i])^(dF.freq/i) - 1).(axes(dF.factor,1)), dF.freq)
+discFactorToSpotRate(dF) = RateCurve( (i -> ((1/dF.factor[i])^(1/i) - 1)*dF.freq).(axes(dF.factor,1)), dF.freq)
 
 
 end
