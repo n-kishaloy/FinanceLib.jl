@@ -101,22 +101,22 @@ tMul(r,n,m) = Time Multiplier@
 tMul(r,n,m) = (1+r/m)^(n*m)
 
 """
-`rate(f,p,n) = Rate which gives a growth over a specified period`
+`rateGwth(f,p,n) = Rate which gives a growth over a specified period`
 
 * f = FV
 * p = PV
 * n = nos of time periods
 """
-rate(f,p,n) = (f/p)^(1/n) - 1
+rateGwth(f,p,n) = (f/p)^(1/n) - 1
 
 """
-`period(f,p,r) = Number of time periods to increase from p to f`
+`periodGwth(f,p,r) = Number of time periods to increase from p to f`
 
 * f = FV
 * p = PV
 * r = rate of return
 """
-period(f,p,r) = log(f/p)/log(1+r)
+periodGwth(f,p,r) = log(f/p)/log(1+r)
 
 """
 `pv(fv,r,n) = PV of a Future cash flow`
@@ -268,19 +268,27 @@ fv(pv,r,n) = pv*(1+r)^n
 fvc(pv,r,n) = pv*exp(r*n)
 
 """
-`effRate(r,m) = real rate of return for multiple compounding per period`
+`effR(r,m) = effective rate of return for multiple compounding per period`
 
 * m = number of compounding per period
-* r = rate of return in a period
+* r = nominal rate of return in a period
 """
-effRate(r,m) = (1.0 + r/m)^m - 1.0
+effR(r,m) = (1.0 + r/m)^m - 1.0
 
 """
-`effRateCont(r) = real rate of return for continuous exponential compounding`
+`effRCont(r) = real rate of return for continuous exponential compounding`
 
-* r = rate of return in a period
+  * r = effective rate of return in a period 
 """
-effRateCont(r) = exp(r) - 1.0
+effRCont(r) = log(1.0 + r) 
+
+"""
+`effRCont(r,m) = real rate of return for continuous exponential compounding`
+
+  * m = number of compounding per period
+  * r = nominal rate of return in a period
+"""
+effRCont(r,m) = (effRCont ∘ effR)(r,m)
 
 """
 `npv(r,tim,cf,t0) = NPV of cash flows against time given in periods`

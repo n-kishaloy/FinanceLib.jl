@@ -7,8 +7,8 @@ import Dates
 
 # @code_warntype FinanceLib.tMul(0.06/12, -120.0) 
 # @code_warntype FinanceLib.tMul(0.06, -10.0, 12.0) 
-# @code_warntype FinanceLib.rate(7.35, 8.52, 5.0) 
-# @code_warntype FinanceLib.period(100.0,50.0,0.07) 
+# @code_warntype FinanceLib.rateGwth(7.35, 8.52, 5.0) 
+# @code_warntype FinanceLib.periodGwth(100.0,50.0,0.07) 
 
 # @code_warntype FinanceLib.pv(10_000_000., 0.09, 5.0) 
 # @code_warntype FinanceLib.pv(12_704_891.6109538, 0.06, 4.0, 12.0) 
@@ -34,8 +34,10 @@ import Dates
 
 # @code_warntype FinanceLib.pv(FinanceLib.pvAnnuity(10.0^6,.05,30.0),0.05,9.0) 
 
-# @code_warntype FinanceLib.effRate(0.08, 2.0) 
-# @code_warntype FinanceLib.effRateCont(0.08) 
+# @code_warntype FinanceLib.effR(0.08, 2.0) 
+# @code_warntype FinanceLib.effRCont(0.08) 
+
+# @code_warntype FinanceLib.effRCont(0.07,4)
 
 # @code_warntype FinanceLib.npv(0.08, [0.25,6.25,3.5,4.5,1.25], 
 # [-6.25,1.2,1.25,3.6,2.5], 0.45) 

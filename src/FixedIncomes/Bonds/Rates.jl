@@ -41,12 +41,8 @@ end
 rate(rt::RateCurve, y::Float64) = rt.rate[Int64(y*rt.freq)]
 
 function rateEst(rt::RateCurve, y::Float64)
-  pt = y*rt.freq; 
-  if round(pt) == pt rt.rate[Int64(pt)]
-  else
-    fl = floor(pt); cl = ceil(pt)
-    rt.rate[Int64(fl)]*(cl - pt) + rt.rate[Int64(cl)]*(pt - fl)
-  end
+  pt = y*rt.freq; fl = unsafe_trunc(Int64, pt); f0 = Int64(fl); r0 = rt.rate[f0]
+  fl == pt ? r0 : r0 + (rt.rate[f0+1] - r0)*(pt-fl)
 end
 
 

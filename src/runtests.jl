@@ -15,8 +15,8 @@ import Dates
 
     @test FinanceLib.tMul(0.06/12, -120.0) == 0.5496327333641637
     @test FinanceLib.tMul(0.06, -10.0, 12.0) == 0.5496327333641637
-    @test FinanceLib.rate(7.35, 8.52, 5.0) == -0.029111071029244595
-    @test FinanceLib.period(100.0,50.0,0.07) == 10.244768351058712
+    @test FinanceLib.rateGwth(7.35, 8.52, 5.0) == -0.029111071029244595
+    @test FinanceLib.periodGwth(100.0,50.0,0.07) == 10.244768351058712
 
   end
 
@@ -52,8 +52,10 @@ import Dates
   end
 
   @testset "effective rates" begin
-    @test FinanceLib.effRate(0.08, 2.0) ≈ 0.0816
-    @test FinanceLib.effRateCont(0.08) == 0.08328706767495864
+    @test FinanceLib.effR(0.08, 2.0) ≈ 0.0816
+    @test FinanceLib.effRCont(0.08) == 0.0769610411361284# 1.08328706767495864
+
+    FinanceLib.pvc(20,FinanceLib.effRCont(0.07,4),4.25) == FinanceLib.pvr(20,1+FinanceLib.effR(0.07,4),4.25)
     
   end
 
