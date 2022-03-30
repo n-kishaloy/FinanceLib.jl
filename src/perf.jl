@@ -34,10 +34,12 @@ import Dates
 
 # @code_warntype FinanceLib.pv(FinanceLib.pvAnnuity(10.0^6,.05,30.0),0.05,9.0) 
 
-# @code_warntype FinanceLib.effR(0.08, 2.0) 
-# @code_warntype FinanceLib.effRCont(0.08) 
+@code_warntype FinanceLib.effR(0.08, 2.0) 
+@code_warntype FinanceLib.nominalRate(0.08, 4)
 
-# @code_warntype FinanceLib.effRCont(0.07,4)
+@code_warntype FinanceLib.effRCont(0.08) 
+
+@code_warntype FinanceLib.effRCont(0.07,4)
 
 # @code_warntype FinanceLib.npv(0.08, [0.25,6.25,3.5,4.5,1.25], 
 # [-6.25,1.2,1.25,3.6,2.5], 0.45) 
@@ -85,6 +87,15 @@ import Dates
 
 # @code_warntype FinanceLib.xnpv(FinanceLib.DateSeries([(Dates.Date(2014,9,20),0.05), (Dates.Date(2015,2,1), 0.0575), (Dates.Date(2016,10,5), 0.0485), (Dates.Date(2017,12,5), 0.0625), (Dates.Date(2019,1,5), 0.055)]), [-150, 20, 15, 80, 100], Dates.Date(2014,2,15))
 
+# rC = FinanceLib.RateCurve([0.05, 0.06, 0.07, 0.08], 2)
+
+# @code_warntype FinanceLib.rateActual(rC, 1.5) 
+# @code_warntype FinanceLib.rateEstimate(rC, 1.5) 
+# @code_warntype FinanceLib.rateEstimate(rC, 1.2) 
+
+
+
+
 # println("Benchmarks")
 
 # println("\nNPV")
@@ -116,7 +127,9 @@ import Dates
 # print("Separate Vec of tim and cf:"); @btime FinanceLib.xirr([Dates.Date(2012,2,25), Dates.Date(2012,6,28), Dates.Date(2013,2,15), Dates.Date(2014,9,18), Dates.Date(2015,2,20)], [-115, 5, 25, -10, 200] ) 
 # print("Tuple of (tim, cf):"); @btime FinanceLib.xirr(tS) 
 
-
+# @btime FinanceLib.rateActual(rC, 1.5) 
+# @btime FinanceLib.rateEstimate(rC, 1.5) 
+# @btime FinanceLib.rateEstimate(rC, 1.2) 
 
 
 

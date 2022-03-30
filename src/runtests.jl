@@ -54,6 +54,7 @@ import Dates
   @testset "effective rates" begin
     @test FinanceLib.effR(0.08, 2.0) ≈ 0.0816
     @test FinanceLib.effRCont(0.08) == 0.0769610411361284# 1.08328706767495864
+    @test FinanceLib.nominalRate(FinanceLib.effR(0.08, 4), 4) ≈ 0.08
 
     FinanceLib.pvc(20,FinanceLib.effRCont(0.07,4),4.25) == FinanceLib.pvr(20,1+FinanceLib.effR(0.07,4),4.25)
     
@@ -106,11 +107,27 @@ import Dates
 
   end
 
-
-
-
   @testset "Sharpe" begin
     @test FinanceLib.sharpe(1.58,9.26,22.36) ≈ 0.3434704830053667 
+  end
+
+  @testset "Rates" begin
+
+    @test FinanceLib.discFactorToNominalRate(FinanceLib.DiscountFactor([0.9524, 0.89, 0.8163, 0.735],1)).rate[3] == 0.0699990723472752
+
+    dsc = FinanceLib.discFactorToNominalRate(FinanceLib.DiscountFactor([ 0.99920063949, 0.99790330288, 0.99596091045, 0.99342713542, 0.99080111671, 0.98778777227 ],2)).rate
+
+    @test dsc[1] ≈ 0.0016
+    @test dsc[2] ≈ 0.0021
+    @test dsc[3] ≈ 0.0027
+    @test dsc[4] ≈ 0.0033
+    @test dsc[5] ≈ 0.0037
+    @test dsc[6] ≈ 0.0041
+
+    @test FinanceLib.rateActual(FinanceLib.RateCurve([0.05, 0.06, 0.07, 0.08], 2), 1.5) == 0.07
+    @test FinanceLib.rateEstimate(FinanceLib.RateCurve([0.05, 0.06, 0.07, 0.08], 2), 1.5) == 0.07
+    @test FinanceLib.rateEstimate(FinanceLib.RateCurve([0.05, 0.06, 0.07, 0.08], 2), 1.2) == 0.064
+
   end
 
 end
