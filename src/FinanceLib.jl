@@ -281,22 +281,22 @@ effR(r,m) = (1.0 + r/m)^m - 1.0
   * r = effective rate of return in a period
   * m = number of compounding per period
 """
-nominalRate(r,m) = ((1.0 + r)^(1.0/m) - 1.0)*m
+nomR(r,m) = ((1.0 + r)^(1.0/m) - 1.0)*m
 
 """
-`effRCont(r) = real rate of return for continuous exponential compounding`
+`expR(r) = real rate of return for continuous exponential compounding`
 
   * r = effective rate of return in a period 
 """
-effRCont(r) = log(1.0 + r) 
+expR(r) = log(1.0 + r) 
 
 """
-`effRCont(r,m) = real rate of return for continuous exponential compounding`
+`expR(r,m) = real rate of return for continuous exponential compounding`
 
   * m = number of compounding per period
   * r = nominal rate of return in a period
 """
-effRCont(r,m) = (effRCont ∘ effR)(r,m)
+expR(r,m) = (expR ∘ effR)(r,m)
 
 """
 `npv(r,tim,cf,t0) = NPV of cash flows against time given in periods`
@@ -419,14 +419,21 @@ Map from beta to rate given a rf and rm
 """
 betaR(rf,rm,b) = rf + b*(rm - rf)
 
+abstract type RateType end
+
+abstract type NomRate <: RateType end
+abstract type EffRate <: RateType end
+abstract type ExpRate <: RateType end
+
 """
-`RateCurve : struct having rates at different periods`
+`RateCurve{T<:RateType} : struct having rates at different periods`
+* T    = Can be NomRate, EffRate or ExpRate
 * rate = Vector of rates at periods 
 * freq = Frequency at which rates are represented
 
 Thus if freq = 2, then rate[3] = rate @ 1.5 years
 """
-struct RateCurve 
+struct RateCurve{T<:RateType}
   rate :: Vector{Float64}
   freq :: Int64
 end
@@ -450,10 +457,12 @@ end
 Note: This function gives rates only at positions where rate is given. Thus 
 for a frequency of 0.5, you may have rates only @ 0.5, 1.0, 1.5 ... etc. Rates at
 other position would result in error. So use this function only at exact 
-positions, in which case it is very fast. Otherwise, use the slower but more robust 
-rateEst function. 
+positions, in which case it is very fast. Otherwise, use the slightly slower but 
+more robust rateEstim function. 
 """
-rateActual(rt::RateCurve, y::Float64) = rt.rate[Int64(y*rt.freq)]
+rateActual(rt::RateCurve{NomRate}, y::Float64) = rt.rate[Int64(y*rt.freq)]
+rateActual(rt::RateCurve{EffRate}, y::Float64) = rt.rate[Int64(y*rt.freq)]
+rateActual(rt::RateCurve{ExpRate}, y::Float64) = rt.rate[Int64(y*rt.freq)]
 
 """
 `rateEstim(rt, y) = estimate rate from a RateCurve and period through Interpolation`
@@ -461,17 +470,19 @@ rateActual(rt::RateCurve, y::Float64) = rt.rate[Int64(y*rt.freq)]
 * rt  = RateCurve
 * y   = period for which rate is to be estimated
 """
-function rateEstimate(rt::RateCurve, y::Float64)
+function rateEstimate(rt::RateCurve{NomRate}, y::Float64) 
   pt = y*rt.freq; fl = unsafe_trunc(Int64, pt); f0 = Int64(fl); r0 = rt.rate[f0]
   fl == pt ? r0 : r0 + (rt.rate[f0+1] - r0)*(pt-fl)
 end
 
 """
-`discFactorToSpotRate(dF) = Convert Discount rate dF to Spot rate`
+`discFactorToNominalRate(dF) = Convert Discount rate dF to Spot rate`
 """
-discFactorToNominalRate(dF) = RateCurve( (i -> ((1/dF.factor[i])^(1/i) - 1)*dF.freq).(axes(dF.factor,1)), dF.freq)
+discFactorToNominalRate(dF) = RateCurve{NomRate}( (i -> ((1/dF.factor[i])^(1/i) - 1)*dF.freq).(axes(dF.factor,1)), dF.freq)
 
+effR(rC::RateCurve{NomRate}) = RateCurve{EffRate}((x -> effR(x, rC.freq)).(rC.rate), rC.freq)
 
+nomR(rC::RateCurve{EffRate}) = RateCurve{NomRate}((x->nomR(x,rC.freq)).(rC.rate),rC.freq)
 
 include("FixedIncomes/mod.jl")
 include("Derivatives/mod.jl")

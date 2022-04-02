@@ -47,7 +47,7 @@ priceCouponBond(r::Float64, bd) = (bd.c/bd.freq) * sum( 1.0 ./ (1+r/bd.freq).^(1
 * r   = RateCurve of spot rates
 * bd  = CouponBond
 """
-priceCouponBond(r::Fl.RateCurve, bd) = (bd.c/bd.freq) * sum( (i -> 1/(1+ Fl.rateActual(r,i/bd.freq)/bd.freq)^i ).(1:(bd.freq*bd.T)) ) + 1/(1 + Fl.rateActual(r, bd.T)/bd.freq)^(bd.T * bd.freq)
+priceCouponBond(r::Fl.RateCurve{Fl.NomRate}, bd) = (bd.c/bd.freq) * sum( (i -> 1/(1+ Fl.rateActual(r,i/bd.freq)/bd.freq)^i ).(1:(bd.freq*bd.T)) ) + 1/(1 + Fl.rateActual(r, bd.T)/bd.freq)^(bd.T * bd.freq)
 
 """
 `ytmCoupleBonds(bd :: CouponBond, P) = YTM of Coupon Bonds`

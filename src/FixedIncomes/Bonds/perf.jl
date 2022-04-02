@@ -15,13 +15,13 @@ import FinanceLib.FixedIncomes.Bonds.Rates as Rt
 
 # @code_warntype Rt.parToSpotRates([(1,0.05), (2,0.0597), (3, 0.0691), (4, 0.0781)])
 
-@code_warntype Rt.parToSpotRates(Fl.RateCurve([0.05, 0.0597, 0.0691, 0.0781], 1))
+@code_warntype Rt.parToSpotRates(Fl.RateCurve{Fl.NomRate}([0.05, 0.0597, 0.0691, 0.0781], 1))
 
-@code_warntype Rt.parToSpotRates(Rt.spotToParRates(Fl.RateCurve([0.05, 0.06, 0.07, 0.08], 2))).rate[3] 
+@code_warntype Rt.parToSpotRates(Rt.spotToParRates(Fl.RateCurve{Fl.NomRate}([0.05, 0.06, 0.07, 0.08], 2))).rate[3] 
 
 @code_warntype Bd.priceCouponBond(0.07, Bd.CouponBond(0.05, 2, 3))
 
-@code_warntype Bd.priceCouponBond(Fl.RateCurve([0.05, 0.055, 0.06, 0.07, 0.075, 0.085],2), Bd.CouponBond(0.05, 2, 3))
+@code_warntype Bd.priceCouponBond(Fl.RateCurve{Fl.NomRate}([0.05, 0.055, 0.06, 0.07, 0.075, 0.085],2), Bd.CouponBond(0.05, 2, 3))
 
 @code_warntype Bd.ytmCouponBond(Bd.CouponBond(0.05, 2, 3), 0.916183660871172)
 

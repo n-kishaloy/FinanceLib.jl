@@ -53,12 +53,31 @@ import Dates
 
   @testset "effective rates" begin
     @test FinanceLib.effR(0.08, 2.0) ≈ 0.0816
-    @test FinanceLib.effRCont(0.08) == 0.0769610411361284# 1.08328706767495864
-    @test FinanceLib.nominalRate(FinanceLib.effR(0.08, 4), 4) ≈ 0.08
+    @test FinanceLib.expR(0.08) == 0.0769610411361284# 1.08328706767495864
+    @test FinanceLib.nomR(FinanceLib.effR(0.08, 4), 4) ≈ 0.08
 
-    FinanceLib.pvc(20,FinanceLib.effRCont(0.07,4),4.25) == FinanceLib.pvr(20,1+FinanceLib.effR(0.07,4),4.25)
-    
+    FinanceLib.pvc(20,FinanceLib.expR(0.07,4),4.25) == FinanceLib.pvr(20,1+FinanceLib.effR(0.07,4),4.25)
+
+    eR = FinanceLib.effR(FinanceLib.RateCurve{FinanceLib.NomRate}([0.0016, 0.0021, 0.0027, 0.0033, 0.0037, 0.0041], 2))
+
+    @test eR.rate[1] ≈ 0.0016006400
+    @test eR.rate[2] ≈ 0.0021011025
+    @test eR.rate[3] ≈ 0.0027018225
+    @test eR.rate[4] ≈ 0.0033027225
+    @test eR.rate[5] ≈ 0.0037034225
+    @test eR.rate[6] ≈ 0.0041042025
+
+    eN = FinanceLib.nomR(eR)
+  
+    @test eN.rate[1] ≈ 0.0016
+    @test eN.rate[2] ≈ 0.0021
+    @test eN.rate[3] ≈ 0.0027
+    @test eN.rate[4] ≈ 0.0033
+    @test eN.rate[5] ≈ 0.0037
+    @test eN.rate[6] ≈ 0.0041
+
   end
+
 
   @testset "npv" begin
     @test FinanceLib.npv(0.05, [0.0:1.0:4.0;],[1000.,2000.0,4000.0,5000.0,6000.0],-1.45)==14709.923338335731
@@ -124,9 +143,9 @@ import Dates
     @test dsc[5] ≈ 0.0037
     @test dsc[6] ≈ 0.0041
 
-    @test FinanceLib.rateActual(FinanceLib.RateCurve([0.05, 0.06, 0.07, 0.08], 2), 1.5) == 0.07
-    @test FinanceLib.rateEstimate(FinanceLib.RateCurve([0.05, 0.06, 0.07, 0.08], 2), 1.5) == 0.07
-    @test FinanceLib.rateEstimate(FinanceLib.RateCurve([0.05, 0.06, 0.07, 0.08], 2), 1.2) == 0.064
+    @test FinanceLib.rateActual(FinanceLib.RateCurve{FinanceLib.NomRate}([0.05, 0.06, 0.07, 0.08], 2), 1.5) == 0.07
+    @test FinanceLib.rateEstimate(FinanceLib.RateCurve{FinanceLib.NomRate}([0.05, 0.06, 0.07, 0.08], 2), 1.5) == 0.07
+    @test FinanceLib.rateEstimate(FinanceLib.RateCurve{FinanceLib.NomRate}([0.05, 0.06, 0.07, 0.08], 2), 1.2) == 0.064
 
   end
 

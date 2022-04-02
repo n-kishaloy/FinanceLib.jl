@@ -22,8 +22,8 @@ import FinanceLib as Fl
 
 * x = RateCurve of par rates
 """
-function parToSpotRates(x :: Fl.RateCurve)
-  n = length(x.rate); y = Fl.RateCurve(Vector{Float64}(undef, n), x.freq)
+function parToSpotRates(x :: Fl.RateCurve{Fl.NomRate})
+  n = length(x.rate); y = Fl.RateCurve{Fl.NomRate}(Vector{Float64}(undef, n), x.freq)
   y.rate[1] = x.rate[1]
   for i ∈ 2:n
     xm = x.rate[i]/x.freq
@@ -38,7 +38,7 @@ end
 
 * x = RateCurve of spot rates
 """
-spotToParRates(x::Fl.RateCurve) = Fl.RateCurve(1:length(x.rate) .|> i -> x.freq*(1-1/(1+x.rate[i]/x.freq)^i)/sum((k -> 1/(1 + x.rate[k]/x.freq)^k).(1:i)), x.freq)
+spotToParRates(x::Fl.RateCurve{Fl.NomRate}) = Fl.RateCurve{Fl.NomRate}(1:length(x.rate) .|> i -> x.freq*(1-1/(1+x.rate[i]/x.freq)^i)/sum((k -> 1/(1 + x.rate[k]/x.freq)^k).(1:i)), x.freq)
 
 
 
