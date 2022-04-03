@@ -89,9 +89,8 @@ import Dates
 
 rC = FinanceLib.RateCurve{FinanceLib.NomRate}([0.05, 0.06, 0.07, 0.08], 2)
 
-@code_warntype FinanceLib.rateActual(rC, 1.5) 
-@code_warntype FinanceLib.rateEstimate(rC, 1.5) 
-@code_warntype FinanceLib.rateEstimate(rC, 1.2) 
+@code_warntype FinanceLib.estimR(rC, 1.5)
+@code_warntype FinanceLib.estimR(rC, 1.2) 
 
 
 # println("Benchmarks")
@@ -125,10 +124,10 @@ rC = FinanceLib.RateCurve{FinanceLib.NomRate}([0.05, 0.06, 0.07, 0.08], 2)
 # print("Separate Vec of tim and cf:"); @btime FinanceLib.xirr([Dates.Date(2012,2,25), Dates.Date(2012,6,28), Dates.Date(2013,2,15), Dates.Date(2014,9,18), Dates.Date(2015,2,20)], [-115, 5, 25, -10, 200] ) 
 # print("Tuple of (tim, cf):"); @btime FinanceLib.xirr(tS) 
 
-@btime FinanceLib.rateActual(rC, 1.5) 
-@btime FinanceLib.rateEstimate(rC, 1.5) 
-@btime FinanceLib.rateEstimate(rC, 1.2) 
+# @btime FinanceLib.estimR(rC, 1.5)
+# @btime FinanceLib.estimR(rC, 1.2)
 
+# error("Hiya")
 
 include("FixedIncomes/perf.jl")
 # include("Derivatives/perf.jl")

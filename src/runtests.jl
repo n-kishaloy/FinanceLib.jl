@@ -53,12 +53,15 @@ import Dates
 
   @testset "effective rates" begin
     @test FinanceLib.effR(0.08, 2.0) ≈ 0.0816
-    @test FinanceLib.expR(0.08) == 0.0769610411361284# 1.08328706767495864
+    @test FinanceLib.expR(0.08, 2.0) == 0.07844142630656266
+    @test FinanceLib.expR(0.08) == 0.0769610411361284
     @test FinanceLib.nomR(FinanceLib.effR(0.08, 4), 4) ≈ 0.08
 
     FinanceLib.pvc(20,FinanceLib.expR(0.07,4),4.25) == FinanceLib.pvr(20,1+FinanceLib.effR(0.07,4),4.25)
 
-    eR = FinanceLib.effR(FinanceLib.RateCurve{FinanceLib.NomRate}([0.0016, 0.0021, 0.0027, 0.0033, 0.0037, 0.0041], 2))
+    eT = FinanceLib.RateCurve{FinanceLib.NomRate}([0.0016, 0.0021, 0.0027, 0.0033, 0.0037, 0.0041], 2)
+
+    eR = FinanceLib.effR(eT)
 
     @test eR.rate[1] ≈ 0.0016006400
     @test eR.rate[2] ≈ 0.0021011025
@@ -75,6 +78,17 @@ import Dates
     @test eN.rate[4] ≈ 0.0033
     @test eN.rate[5] ≈ 0.0037
     @test eN.rate[6] ≈ 0.0041
+
+    eZ = FinanceLib.nomR(FinanceLib.effR(FinanceLib.expR(eT))) # N - X - E - N
+    eY = FinanceLib.nomR(FinanceLib.expR(FinanceLib.effR(eT))) # N - E - X - N
+    eW = FinanceLib.nomR(FinanceLib.expR(eT)) # N - X - N
+
+    @test eZ.rate[3] == eW.rate[3]
+    @test eY.rate[4] == eW.rate[4]
+    @test eZ.rate[2] == eY.rate[2]
+    @test eZ.rate[5] == eY.rate[5]
+    @test eZ.rate[1] == eW.rate[1]
+
 
   end
 
@@ -143,9 +157,8 @@ import Dates
     @test dsc[5] ≈ 0.0037
     @test dsc[6] ≈ 0.0041
 
-    @test FinanceLib.rateActual(FinanceLib.RateCurve{FinanceLib.NomRate}([0.05, 0.06, 0.07, 0.08], 2), 1.5) == 0.07
-    @test FinanceLib.rateEstimate(FinanceLib.RateCurve{FinanceLib.NomRate}([0.05, 0.06, 0.07, 0.08], 2), 1.5) == 0.07
-    @test FinanceLib.rateEstimate(FinanceLib.RateCurve{FinanceLib.NomRate}([0.05, 0.06, 0.07, 0.08], 2), 1.2) == 0.064
+    @test FinanceLib.estimR(FinanceLib.RateCurve{FinanceLib.NomRate}([0.05, 0.06, 0.07, 0.08], 2), 1.5) == 0.07
+    @test FinanceLib.estimR(FinanceLib.RateCurve{FinanceLib.NomRate}([0.05, 0.06, 0.07, 0.08], 2), 1.2) == 0.064
 
   end
 

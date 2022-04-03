@@ -92,7 +92,7 @@ fwdDisFact((r0,t0), (r1,t1)) = disFact(r1,t1) / disFact(r0,t0)
 tMul(r,n) = (1+r)^n
 
 """
-tMul(r,n,m) = Time Multiplier@
+`tMul(r,n,m) = Time Multiplier`
 
 *r = rate of increase / time period
 *n = nos of time periods
@@ -276,6 +276,21 @@ fvc(pv,r,n) = pv*exp(r*n)
 effR(r,m) = (1.0 + r/m)^m - 1.0
 
 """
+`expToEffR(r) = Exp rate to effective rate`
+
+* r = exponential rate
+"""
+expToEffR(r) = exp(r) - 1.0
+
+"""
+`expToNomR(r,m) = Exp rate to nominal rate`
+
+* r = exponential rate
+* m = number of compounding per period
+"""
+expToNomR(r,m) = (exp(r/m) - 1.0)*m
+
+"""
 `nominalRate(r,m) = nominal rate of return for multiple compounding per period`
 
   * r = effective rate of return in a period
@@ -296,7 +311,7 @@ expR(r) = log(1.0 + r)
   * m = number of compounding per period
   * r = nominal rate of return in a period
 """
-expR(r,m) = (expR ∘ effR)(r,m)
+expR(r,m) = m*log(1.0 + r/m)
 
 """
 `npv(r,tim,cf,t0) = NPV of cash flows against time given in periods`
@@ -449,31 +464,19 @@ struct DiscountFactor
 end
 
 """
-`rateActual(rt, y) = get exact rates for period`
-
-* rt  = RateCurve
-* y   = period for which rate is desired
-
-Note: This function gives rates only at positions where rate is given. Thus 
-for a frequency of 0.5, you may have rates only @ 0.5, 1.0, 1.5 ... etc. Rates at
-other position would result in error. So use this function only at exact 
-positions, in which case it is very fast. Otherwise, use the slightly slower but 
-more robust rateEstim function. 
-"""
-rateActual(rt::RateCurve{NomRate}, y::Float64) = rt.rate[Int64(y*rt.freq)]
-rateActual(rt::RateCurve{EffRate}, y::Float64) = rt.rate[Int64(y*rt.freq)]
-rateActual(rt::RateCurve{ExpRate}, y::Float64) = rt.rate[Int64(y*rt.freq)]
-
-"""
-`rateEstim(rt, y) = estimate rate from a RateCurve and period through Interpolation`
+`estimR(rt, y) = estimate rate from a RateCurve and period through Interpolation`
 
 * rt  = RateCurve
 * y   = period for which rate is to be estimated
 """
-function rateEstimate(rt::RateCurve{NomRate}, y::Float64) 
-  pt = y*rt.freq; fl = unsafe_trunc(Int64, pt); f0 = Int64(fl); r0 = rt.rate[f0]
-  fl == pt ? r0 : r0 + (rt.rate[f0+1] - r0)*(pt-fl)
-end
+estimR(rt::RateCurve{NomRate}, y::Float64) = estimR(rt.rate, rt.freq, y)
+estimR(rt::RateCurve{EffRate}, y::Float64) = estimR(rt.rate, rt.freq, y)
+estimR(rt::RateCurve{ExpRate}, y::Float64) = estimR(rt.rate, rt.freq, y)
+
+function estimR(rx, fq, y)
+  pt = y*fq; fl = unsafe_trunc(Int64, pt); f0 = Int64(fl); r0 = rx[f0]
+  fl == pt ? r0 : r0 + (rx[f0+1] - r0)*(pt-fl)
+end 
 
 """
 `discFactorToNominalRate(dF) = Convert Discount rate dF to Spot rate`
@@ -482,7 +485,18 @@ discFactorToNominalRate(dF) = RateCurve{NomRate}( (i -> ((1/dF.factor[i])^(1/i) 
 
 effR(rC::RateCurve{NomRate}) = RateCurve{EffRate}((x -> effR(x, rC.freq)).(rC.rate), rC.freq)
 
+effR(rC::RateCurve{ExpRate}) = RateCurve{EffRate}((x -> expToEffR(x)).(rC.rate), rC.freq)
+
 nomR(rC::RateCurve{EffRate}) = RateCurve{NomRate}((x->nomR(x,rC.freq)).(rC.rate),rC.freq)
+
+nomR(rC::RateCurve{ExpRate}) = RateCurve{NomRate}((x->expToNomR(x,rC.freq)).(rC.rate),rC.freq)
+
+expR(rC::RateCurve{NomRate}) = RateCurve{ExpRate}((x -> expR(x, rC.freq)).(rC.rate), rC.freq)
+
+expR(rC::RateCurve{EffRate}) = RateCurve{ExpRate}((x -> expR(x)).(rC.rate), rC.freq)
+
+
+
 
 include("FixedIncomes/mod.jl")
 include("Derivatives/mod.jl")
