@@ -500,5 +500,6 @@ expR(rC::RateCurve{EffRate}) = RateCurve{ExpRate}((x -> expR(x)).(rC.rate), rC.f
 
 include("FixedIncomes/mod.jl")
 include("Derivatives/mod.jl")
+include("Statements/mod.jl")
 
 end # module

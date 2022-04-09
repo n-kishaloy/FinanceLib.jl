@@ -87,10 +87,17 @@ import Dates
 
 # @code_warntype FinanceLib.xnpv(FinanceLib.DateSeries([(Dates.Date(2014,9,20),0.05), (Dates.Date(2015,2,1), 0.0575), (Dates.Date(2016,10,5), 0.0485), (Dates.Date(2017,12,5), 0.0625), (Dates.Date(2019,1,5), 0.055)]), [-150, 20, 15, 80, 100], Dates.Date(2014,2,15))
 
-rC = FinanceLib.RateCurve{FinanceLib.NomRate}([0.05, 0.06, 0.07, 0.08], 2)
+# rC = FinanceLib.RateCurve{FinanceLib.NomRate}([0.05, 0.06, 0.07, 0.08], 2)
 
-@code_warntype FinanceLib.estimR(rC, 1.5)
-@code_warntype FinanceLib.estimR(rC, 1.2) 
+# @code_warntype FinanceLib.estimR(rC, 1.5)
+# @code_warntype FinanceLib.estimR(rC, 1.2) 
+
+# eT = FinanceLib.RateCurve{FinanceLib.NomRate}([0.0016, 0.0021, 0.0027, 0.0033, 0.0037, 0.0041], 2)
+
+# @code_warntype FinanceLib.nomR(FinanceLib.effR(FinanceLib.expR(eT))) # N - X - E - N
+# @code_warntype FinanceLib.nomR(FinanceLib.expR(FinanceLib.effR(eT))) # N - E - X - N
+# @code_warntype FinanceLib.nomR(FinanceLib.expR(eT)) # N - X - N
+
 
 
 # println("Benchmarks")
@@ -127,9 +134,15 @@ rC = FinanceLib.RateCurve{FinanceLib.NomRate}([0.05, 0.06, 0.07, 0.08], 2)
 # @btime FinanceLib.estimR(rC, 1.5)
 # @btime FinanceLib.estimR(rC, 1.2)
 
+# @btime FinanceLib.nomR(FinanceLib.effR(FinanceLib.expR(eT))) # N - X - E - N
+# @btime FinanceLib.nomR(FinanceLib.expR(FinanceLib.effR(eT))) # N - E - X - N
+# @btime FinanceLib.nomR(FinanceLib.expR(eT)) # N - X - N
+
+
 # error("Hiya")
 
 include("FixedIncomes/perf.jl")
 # include("Derivatives/perf.jl")
+include("Statements/perf.jl")
 
 

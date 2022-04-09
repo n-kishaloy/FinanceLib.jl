@@ -166,3 +166,4 @@ end
 
 include("FixedIncomes/runtests.jl")
 include("Derivatives/runtests.jl")
+include("Statements/runtests.jl")
