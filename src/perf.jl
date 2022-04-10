@@ -34,12 +34,12 @@ import Dates
 
 # @code_warntype FinanceLib.pv(FinanceLib.pvAnnuity(10.0^6,.05,30.0),0.05,9.0) 
 
-@code_warntype FinanceLib.effR(0.08, 2.0) 
-@code_warntype FinanceLib.nomR(0.08, 4)
+# @code_warntype FinanceLib.effR(0.08, 2.0) 
+# @code_warntype FinanceLib.nomR(0.08, 4)
 
-@code_warntype FinanceLib.expR(0.08) 
+# @code_warntype FinanceLib.expR(0.08) 
 
-@code_warntype FinanceLib.expR(0.07,4)
+# @code_warntype FinanceLib.expR(0.07,4)
 
 # @code_warntype FinanceLib.npv(0.08, [0.25,6.25,3.5,4.5,1.25], 
 # [-6.25,1.2,1.25,3.6,2.5], 0.45) 
@@ -141,7 +141,7 @@ import Dates
 
 # error("Hiya")
 
-include("FixedIncomes/perf.jl")
+# include("FixedIncomes/perf.jl")
 # include("Derivatives/perf.jl")
 include("Statements/perf.jl")
 
