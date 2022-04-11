@@ -15,6 +15,8 @@ You may see the github repository at <https//github.com/n-kishaloy/FinanceLib.jl
 """
 module Statements
 
+import FinanceLib as Fl
+
 @enum BsTyp begin
   Cash                          
   CurrentReceivables             
@@ -126,7 +128,40 @@ end
   TotalComprehensiveIncome      
 end
 
-
+@enum CfTyp begin
+  DeferredIncomeTaxes           
+  ChangeInventories             
+  ChangeReceivables             
+  ChangePayables                
+  ChangeLiabilities             
+  ChangeProvisions              
+  OtherCfOperations             
+  StockCompensationExpense      
+  StockCompensationTaxBenefit   
+  AccretionDebtDiscount         
+  CashFlowOperations            
+  InvestmentsPpe                
+  InvestmentsCapDevp            
+  InvestmentsLoans              
+  AcqEquityAssets               
+  DisEquityAssets               
+  DisPpe                        
+  ChangeInvestments             
+  CfInvestmentInterest          
+  CfInvestmentDividends         
+  OtherCfInvestments            
+  CashFlowInvestments           
+  StockSales                    
+  StockRepurchase               
+  DebtIssue                     
+  DebtRepay                     
+  InterestFin                   
+  Dividends                     
+  DonorContribution             
+  OtherCfFinancing              
+  CashFlowFinancing             
+  NetCashFlow                   
+end
 
 balanceSheetCalcMap = 
   [ 
@@ -221,6 +256,43 @@ profitLossCalcMap =
   ]  :: Vector{Tuple{PlTyp, Vector{PlTyp}, Vector{PlTyp}}}
 
 # cashFlowCalcMap = 
+
+const BsDict = Dict{BsTyp, Float64}
+const PlDict = Dict{PlTyp, Float64}
+const CfDict = Dict{CfTyp, Float64}
+
+using Dates: Date
+
+struct Account
+  dateBegin         :: Date 
+  dateEnd           :: Date
+
+  balanceSheetBegin :: Union{BsDict, Nothing}
+  balanceSheetEnd   :: Union{BsDict, Nothing}
+  profitLoss        :: PlDict
+  cashFlow          :: Union{CfDict, Nothing}
+
+  others            :: Dict{Symbol, Float64}
+end
+
+struct Params  
+  U   :: Float64  # Unlevered
+  S   :: Float64  # Tax shield
+  E   :: Float64  # Equity 
+  D   :: Float64  # Debt 
+  V   :: Float64  # Valuation
+
+end
+
+struct Company 
+  code          :: Symbol
+  affiliation   :: Dict{Symbol, Float64}
+  consolidated  :: Bool
+  statement     :: Vector{Account}
+  sharePrice    :: Union{Fl.DateSeries, Nothing}
+  rate          :: Union{Vector{Params}, Nothing}
+  beta          :: Union{Vector{Params}, Nothing}
+end
 
 
 

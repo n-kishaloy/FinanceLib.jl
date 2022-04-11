@@ -12,5 +12,6 @@ println(St.balanceSheetEntries)
 println(St.profitLossCalcItems)
 println(St.profitLossEntries)
 
+println(St.BsDict(St.Cash => 5.0), St.CfDict(St.ChangeInventories => 2.5))
 
 println("Benchmarks\n")
