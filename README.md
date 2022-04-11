@@ -10,7 +10,10 @@ The library exports a base module **FinanceLib** and all domains in Finance are 
 
 ## Code examples
 
-
+| Syntax      | Description |
+| ----------- | ----------- |
+| Header      | Title       |
+| Paragraph   | Text        |
 
 ## Installation
 Add the library and import appropriate modules. 
