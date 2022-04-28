@@ -24,8 +24,8 @@ import FinanceLib as Fl
   CurrentAdvances               
   OtherCurrentAssets            
   CurrentInvestments            
-  RawMaterials                  
   Inventories                   
+  RawMaterials                  
   WorkInProgress                
   FinishedGoods                 
   CurrentAssets                 
@@ -118,7 +118,9 @@ end
   Pbt                           
   TaxesCurrent                  
   TaxesDeferred                 
-  Pat                           
+  Pat          
+  NetIncomeDiscontinuedOps    
+  NetIncome             
   GainsLossesForex              
   GainsLossesActurial           
   GainsLossesSales              
@@ -245,12 +247,16 @@ profitLossCalcMap =
     [Pbt],
     [TaxesCurrent, TaxesDeferred]
   )
+  , (NetIncome,
+    [Pat, NetIncomeDiscontinuedOps],
+    PlTyp[]
+  )
   , (OtherComprehensiveIncome,
     [GainsLossesForex, GainsLossesActurial, GainsLossesSales, FvChangeAvlSale],
     [OtherDeferredTaxes]
   )
   , (TotalComprehensiveIncome,
-    [Pat, OtherComprehensiveIncome],
+    [NetIncome, OtherComprehensiveIncome],
     PlTyp[]
   )
   ]  :: Vector{Tuple{PlTyp, Vector{PlTyp}, Vector{PlTyp}}}
@@ -269,10 +275,10 @@ struct Account
 
   balanceSheetBegin :: Union{BsDict, Nothing}
   balanceSheetEnd   :: Union{BsDict, Nothing}
-  profitLoss        :: PlDict
+  profitLoss        :: Union{PlDict, Nothing}
   cashFlow          :: Union{CfDict, Nothing}
 
-  others            :: Dict{Symbol, Float64}
+  others            :: Union{Dict{Symbol, Float64}, Nothing}
 end
 
 struct Params  
@@ -288,26 +294,57 @@ struct Company
   code          :: Symbol
   affiliation   :: Dict{Symbol, Float64}
   consolidated  :: Bool
-  statement     :: Vector{Account}
+  period        :: Vector{Date}
+  balanceSheet  :: Dict{Date, BsDict}
+  profitLoss    :: Dict{Tuple{Date, Date}, PlDict}
+  cashFlow      :: Dict{Tuple{Date, Date}, CfDict}
+  others        :: Dict{Tuple{Date, Date}, Dict{Symbol, Float64}}
   sharePrice    :: Union{Fl.DateSeries, Nothing}
   rate          :: Union{Vector{Params}, Nothing}
   beta          :: Union{Vector{Params}, Nothing}
 end
 
-
-
-function createCalcMaps(bM :: Vector{Tuple{T, Vector{T}, Vector{T}}}) where T
+function createCalcSets(bM :: Vector{Tuple{T, Vector{T}, Vector{T}}}) where T
   bCl = [x for (x, _, _) ∈ bM] :: Vector{T}
   bE = mapreduce( ((x,y,z),) -> (y...,z...), 
       (z,y) -> [z...,filter(x -> x ∉ bCl , y)...] :: Vector{T}, bM, init = T[]) 
-  bCl, bE
+  Set(bCl), Set(bE)
 end
 
-balanceSheetCalcItems, balanceSheetEntries = createCalcMaps(balanceSheetCalcMap)
-profitLossCalcItems, profitLossEntries = createCalcMaps(profitLossCalcMap)
+balanceSheetCalcItems, balanceSheetEntries = createCalcSets(balanceSheetCalcMap)
+profitLossCalcItems, profitLossEntries = createCalcSets(profitLossCalcMap)
 
+getAccount(x::Company, d1::Date, d2::Date) = Account(
+  d1, d2, get(x.balanceSheet,d1,nothing), get(x.balanceSheet,d2,nothing), 
+  get(x.profitLoss,(d1,d2),nothing), get(x.cashFlow,(d1,d2),nothing), 
+  get(x.others,(d1,d2),nothing)
+)
 
+putAccount!(x::Company, z::Account) = error("TODO: Add Implementation")
 
+putDict!(x::Company, z::BsDict, d1) = error("TODO: Add Implementation")
 
+putDict!(x::Company, z::PlDict, d1, d2) = error("TODO: Add Implementation")
+
+putDict!(x::Company, z::CfDict, d1, d2) = error("TODO: Add Implementation")
+
+cleanDict!(x) = error("TODO: Add Implementation")
+
+cleanDict!(x::Company) = error("TODO: Add Implementation")
+
+calcDict!(x::BsDict) = error("TODO: Add Implementation")
+
+calcDict!(x::PlDict) = error("TODO: Add Implementation")
+
+calcDict!(x::CfDict, b1, b2) = error("TODO: Add Implementation")
+
+calcDict!(x::Company) = error("TODO: Add Implementation")
+
+saveParquet(x) = error("TODO: Add Implementation")
+
+readParquet(s) = error("TODO: Add Implementation")
+
+eps(x) = error("TODO: Add Implementation")
+dilutedEPS(;earn, prefDiv = 0.0, shares, sharePrice, options) = error("TODO: Add Implementation")
 
 end
