@@ -16,3 +16,13 @@ println(St.BsDict(St.Cash => 5.0), St.CfDict(St.ChangeInventories => 2.5))
 
 println("Benchmarks\n")
 
+abra(x::T) where T <: Union{Int64, Float64} =  2x
+
+function abra(x) 
+  "Not here"
+  
+end
+
+@code_warntype abra(5)
+
+println(abra("a"))
